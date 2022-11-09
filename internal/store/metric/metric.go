@@ -17,7 +17,7 @@ func (u Usage) IncSuccess() {
 func NewUsage(store string) Usage {
 	return Usage{
 		SuccessCount: promauto.NewCounter(prometheus.CounterOpts{
-			Namespace: "cloud-fall-2022",
+			Namespace: "cloud_fall_2022",
 			Name:      "database_success_count",
 			Help:      "number of success in database access",
 			Subsystem: "store",

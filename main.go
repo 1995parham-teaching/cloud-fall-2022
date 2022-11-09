@@ -3,13 +3,18 @@ package main
 import (
 	"log"
 
+	"github.com/1995parham-teaching/cloud-fall-2022/internal/config"
 	"github.com/1995parham-teaching/cloud-fall-2022/internal/http/handler"
+	"github.com/1995parham-teaching/cloud-fall-2022/internal/http/middleware"
 	"github.com/1995parham-teaching/cloud-fall-2022/internal/store/person"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 )
 
 func main() {
+	cfg := config.New()
+	log.Printf("%+v", cfg)
+
 	app := echo.New()
 
 	logger, err := zap.NewDevelopment()
@@ -21,7 +26,7 @@ func main() {
 		Store:  person.NewInMemory(logger.Named("store")),
 		Logger: logger.Named("http"),
 	}
-	p.Register(app.Group(""))
+	p.Register(app.Group("", middleware.JWT))
 
 	app.GET("/hello", handler.Hello)
 
