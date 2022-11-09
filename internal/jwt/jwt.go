@@ -9,6 +9,7 @@ import (
 const Secret = "Hello"
 
 func Create(username string) string {
+	// nolint: exhaustivestruct
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
 		Issuer:   "cloud",
 		Subject:  username,
