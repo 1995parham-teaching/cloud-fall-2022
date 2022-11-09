@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 
 	cloudJWT "github.com/1995parham-teaching/cloud-fall-2022/internal/jwt"
@@ -24,19 +25,22 @@ func JWT(next echo.HandlerFunc) echo.HandlerFunc {
 			return echo.ErrUnauthorized
 		}
 
-		token, err := jwt.Parse(auths[1], func(token *jwt.Token) (interface{}, error) {
+		var claims jwt.RegisteredClaims
+
+		token, err := jwt.ParseWithClaims(auths[1], &claims, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, ErrUnexpectedSingingMethod
 			}
 
-			return cloudJWT.Secret, nil
+			return []byte(cloudJWT.Secret), nil
 		})
 		if err != nil {
 			return echo.ErrUnauthorized
 		}
 
-		if claims, ok := token.Claims.(jwt.RegisteredClaims); ok && token.Valid {
+		if token.Valid {
 			c.Set("username", claims.Subject)
+			fmt.Println(c.Get("username").(string))
 		} else {
 			return echo.ErrUnauthorized
 		}

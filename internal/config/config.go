@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/1995parham-teaching/cloud-fall-2022/internal/metric"
+	"github.com/1995parham-teaching/cloud-fall-2022/internal/tracing"
 	"github.com/knadh/koanf"
 	"github.com/knadh/koanf/parsers/toml"
 	"github.com/knadh/koanf/providers/env"
@@ -13,7 +14,8 @@ import (
 )
 
 type Config struct {
-	Metric metric.Config `koanf:"metric"`
+	Metric  metric.Config  `koanf:"metric"`
+	Tracing tracing.Config `koanf:"tracing"`
 }
 
 // CLOUD_METRIC__ADDRESS

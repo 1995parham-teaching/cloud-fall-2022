@@ -8,17 +8,29 @@ import (
 	"github.com/1995parham-teaching/cloud-fall-2022/internal/model"
 	"github.com/1995parham-teaching/cloud-fall-2022/internal/store/person"
 	"github.com/labstack/echo/v4"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 )
 
 type Person struct {
 	Store  person.Person
 	Logger *zap.Logger
+	Tracer trace.Tracer
 }
 
 func (p Person) List(c echo.Context) error {
+	_, span := p.Tracer.Start(c.Request().Context(), "persons.list")
+	defer span.End()
+
+	span.SetAttributes(attribute.String("username", c.Get("username").(string)))
+
 	ps, err := p.Store.Get()
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, err.Error())
+
 		return echo.ErrInternalServerError
 	}
 
