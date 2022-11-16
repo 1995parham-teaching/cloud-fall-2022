@@ -38,7 +38,7 @@ func JWT(next echo.HandlerFunc) echo.HandlerFunc {
 			return echo.ErrUnauthorized
 		}
 
-		if token.Valid {
+		if claims, ok := token.Claims.(*jwt.RegisteredClaims); ok && token.Valid {
 			c.Set("username", claims.Subject)
 			fmt.Println(c.Get("username").(string))
 		} else {
