@@ -18,7 +18,7 @@ func main() {
 
 	app := echo.New()
 
-	_ = tracing.New(cfg.Tracing)
+	tracer := tracing.New(cfg.Tracing)
 
 	logger, err := zap.NewDevelopment()
 	if err != nil {
@@ -28,6 +28,7 @@ func main() {
 	p := handler.Person{
 		Store:  person.NewInMemory(logger.Named("store")),
 		Logger: logger.Named("http"),
+		Tracer: tracer,
 	}
 	p.Register(app.Group("", middleware.JWT))
 
