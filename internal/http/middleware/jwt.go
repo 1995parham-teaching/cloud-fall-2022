@@ -25,9 +25,7 @@ func JWT(next echo.HandlerFunc) echo.HandlerFunc {
 			return echo.ErrUnauthorized
 		}
 
-		var claims jwt.RegisteredClaims
-
-		token, err := jwt.ParseWithClaims(auths[1], &claims, func(token *jwt.Token) (interface{}, error) {
+		token, err := jwt.ParseWithClaims(auths[1], new(jwt.RegisteredClaims), func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, ErrUnexpectedSingingMethod
 			}
